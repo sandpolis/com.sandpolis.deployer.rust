@@ -8,6 +8,7 @@
 //                                                                            //
 //============================================================================//
 
+use anyhow::{bail, Result};
 use log::{debug, error, info};
 use std::collections::HashMap;
 
@@ -15,10 +16,14 @@ use std::collections::HashMap;
 const CFG_AGENT_MODULES: &str = "agent.modules";
 
 /// Install or reinstall a vanilla (Java) agent.
-pub fn install(config: &HashMap<String, String>) {
-    if config.contains_key() {
+pub fn install(config: &HashMap<String, String>) -> Result<()> {
+
+    debug!("Starting vanilla agent installation");
+
+    //if config.contains_key() {
         // Use embedded module
-    } else {
+    //} else {
         // Download the module
-    }
+    //}
+    return Ok(());
 }

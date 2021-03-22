@@ -8,18 +8,30 @@
 //                                                                            //
 //============================================================================//
 
+use anyhow::{bail, Result};
 use log::{debug, error, info};
 use std::collections::HashMap;
+use std::fs::{File, create_dir_all};
+use std::io::Write;
 
 /// Install or reinstall a micro (Rust) agent.
-pub fn install(config: &HashMap<String, String>) {
-    if config.contains_key("micro-agent") {
-        // Use embedded module
-        let mut file = File::create("name.test");
+pub fn install(config: &HashMap<String, String>) -> Result<()> {
 
-        file.write_all(config["micro-agent"]?);
+    debug!("Starting micro agent installation");
+
+    let path = config.get(crate::CFG_AGENT_PATH).expect("Missing agent path");
+
+    // Create the agent directory
+    create_dir_all(path)?;
+
+    if let Some(executable) = crate::BinaryAssets::get("agent-micro") {
+        let exe_path = path.to_string() + "/agent-micro";
+
+        File::create(exe_path)?.write_all(&executable)?;
     } else {
         // Download the module
-        download_artifact("https://repo1.maven.org/maven2/%s/%s/%s/%s");
+        //download_artifact("https://repo1.maven.org/maven2/%s/%s/%s/%s");
     }
+
+    return Ok(());
 }

@@ -9,8 +9,10 @@
 //============================================================================//
 
 use log::{debug, error, info};
+use std::process::Command;
 
 /// Stop and delete any services matching the given name.
+#[cfg(target_os = "linux")]
 pub fn remove_service(name: String) {
     if let Ok(status) = Command::new("systemctl").arg("stop").arg(name).status() {
         if status.success() {
