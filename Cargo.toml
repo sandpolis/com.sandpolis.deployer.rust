@@ -1,5 +1,5 @@
 [package]
-name = "com-sandpolis-distagent"
+name = "com-sandpolis-distagent-rust"
 version = "0.1.0"
 edition = "2018"
 
