@@ -10,4 +10,4 @@ tokio = { version = "1", features = ["full"] }
 env_logger = "0.8"
 dotproperties = "0.1"
 log = "0.4"
-rust-embed = { version = "5.9", default-features = false, features = ["debug-embed"] }
+rust-embed = { version = "6.1", default-features = false, features = ["debug-embed"] }
