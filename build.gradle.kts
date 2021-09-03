@@ -41,7 +41,7 @@ publishing {
 
 			artifact(project.file("target/x86_64-unknown-linux-gnu/release/distagent"))
 		}
-		tasks.findByName("mavenLinuxAmd64")?.dependsOn(buildLinuxAmd64)
+		tasks.findByName("publishMavenLinuxAmd64PublicationToGitHubPackagesRepository")?.dependsOn(buildLinuxAmd64)
 
 		create<MavenPublication>("mavenLinuxAarch64") {
 			groupId = "com.sandpolis"
@@ -50,7 +50,7 @@ publishing {
 
 			artifact(project.file("target/aarch64-unknown-linux-gnu/release/distagent"))
 		}
-		tasks.findByName("mavenLinuxAarch64")?.dependsOn(buildLinuxAarch64)
+		tasks.findByName("publishMavenLinuxAarch64PublicationToGitHubPackagesRepository")?.dependsOn(buildLinuxAarch64)
 
 		create<MavenPublication>("mavenWindowsAmd64") {
 			groupId = "com.sandpolis"
@@ -59,7 +59,7 @@ publishing {
 
 			artifact(project.file("target/x86_64-pc-windows-gnu/release/distagent"))
 		}
-		tasks.findByName("mavenWindowsAmd64")?.dependsOn(buildWindowsAmd64)
+		tasks.findByName("publishMavenWindowsAmd64PublicationToGitHubPackagesRepository")?.dependsOn(buildWindowsAmd64)
 	}
 }
 
