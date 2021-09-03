@@ -21,9 +21,9 @@ jobs:
         toolchain: stable
 
     - uses: actions-rs/install@v0.1
-        with:
-          crate: cross
-          version: latest
+      with:
+        crate: cross
+        version: latest
 
     - name: Initialize Java
       uses: actions/setup-java@v1
