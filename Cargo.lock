@@ -8,7 +8,7 @@ version = "0.7.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7404febffaa47dac81aa44dba71523c9d069b1bdc50a77db41195149e17f68e5"
 dependencies = [
- "memchr 2.3.4",
+ "memchr",
 ]
 
 [[package]]
@@ -91,22 +91,12 @@ name = "distagent"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "dotproperties",
  "env_logger",
  "log",
  "reqwest",
  "rust-embed",
  "serde",
  "serde_json",
-]
-
-[[package]]
-name = "dotproperties"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59ebecdec82f1760362e7ae36ba097792df27e7e7216b7992dd0cca517d60fb7"
-dependencies = [
- "nom",
 ]
 
 [[package]]
@@ -205,7 +195,7 @@ dependencies = [
  "futures-core",
  "futures-io",
  "futures-task",
- "memchr 2.3.4",
+ "memchr",
  "pin-project-lite",
  "pin-utils",
  "slab",
@@ -404,15 +394,6 @@ checksum = "a3e378b66a060d48947b590737b30a1be76706c8dd7b8ba0f2fe3989c68a853f"
 
 [[package]]
 name = "memchr"
-version = "1.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "148fab2e51b4f1cfc66da2a7c32981d1d3c083a803978268bb11fe4b86925e7a"
-dependencies = [
- "libc",
-]
-
-[[package]]
-name = "memchr"
 version = "2.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ee1c47aaa256ecabcaea351eae4a9b01ef39ed810004e298d2511ed284b1525"
@@ -462,15 +443,6 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "tempfile",
-]
-
-[[package]]
-name = "nom"
-version = "3.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05aec50c70fd288702bcd93284a8444607f3292dbdf2a30de5ea5dcdbe72287b"
-dependencies = [
- "memchr 1.0.2",
 ]
 
 [[package]]
@@ -635,7 +607,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "957056ecddbeba1b26965114e191d2e8589ce74db242b6ea25fc4062427a5c19"
 dependencies = [
  "aho-corasick",
- "memchr 2.3.4",
+ "memchr",
  "regex-syntax",
 ]
 
@@ -897,7 +869,7 @@ dependencies = [
  "autocfg",
  "bytes",
  "libc",
- "memchr 2.3.4",
+ "memchr",
  "mio",
  "num_cpus",
  "pin-project-lite",

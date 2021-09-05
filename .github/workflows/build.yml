@@ -9,6 +9,10 @@ jobs:
     name: "Build on ubuntu-latest"
     runs-on: ubuntu-latest
     steps:
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libssl-dev
+
     - name: Initialize QEMU
       uses: docker/setup-qemu-action@v1
 

@@ -11,15 +11,22 @@
 use anyhow::{bail, Result};
 use log::{debug, error, info};
 use rust_embed::RustEmbed;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct KiloAgentModule {
-    /// The artifact's group
-    group: String,
+    gpr_module: Option<String>,
 
-    /// The artifact's name
+    gpr_package: Option<String>,
+
+    /// The artifact's group
+    maven_group: Option<String>,
+
+    /// The artifact's identifier
     artifact: String,
+
+    /// The artifact's filename
+    filename: String,
 
     /// The artifact's version string
     version: Option<String>,
@@ -35,6 +42,21 @@ pub struct KiloAgentConfig {
 }
 
 #[derive(Deserialize)]
+pub struct CallbackConfig {
+    /// The callback address
+    address: String,
+
+    /// The callback identifier
+    identifier: String,
+}
+
+#[derive(Serialize)]
+pub struct CallbackResult {
+    result: bool,
+    install_path: String,
+}
+
+#[derive(Deserialize)]
 pub struct DistagentConfig {
     /// The type of agent to install
     agent_type: String,
@@ -46,7 +68,9 @@ pub struct DistagentConfig {
     /// order to recover from errors.
     autorecover: bool,
 
-    kilo: KiloAgentConfig,
+    kilo: Option<KiloAgentConfig>,
+
+    callback: Option<CallbackConfig>,
 }
 
 pub mod agents {
@@ -54,7 +78,7 @@ pub mod agents {
     pub mod micro;
     pub mod nano;
 }
-pub mod http;
+pub mod callback;
 pub mod systemd;
 
 /// Contains embedded resources

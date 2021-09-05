@@ -8,6 +8,21 @@
 //                                                                            //
 //============================================================================//
 
-use log::{debug, error, info};
+use crate::{CallbackConfig, CallbackResult};
 
-pub fn download_artifact(url: String) {}
+use std::net::TcpStream;
+use std::io::Write;
+
+use anyhow::{bail, Result};
+use log::{debug, error, info};
+use serde_json;
+
+/// Perform a result callback
+pub fn callback(config: &CallbackConfig, result: &CallbackResult) -> Result<()> {
+    let data = serde_json::to_string(result)?;
+
+    // Fire off the callback
+    TcpStream::connect(&config.address)?.write(data.as_str().as_bytes())?;
+
+    return Ok(());
+}

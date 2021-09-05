@@ -8,15 +8,42 @@
 //                                                                            //
 //============================================================================//
 
+use anyhow::{bail, Result};
 use log::{debug, error, info};
+use std::fs;
+use std::path::Path;
 use std::process::Command;
 
 /// Stop and delete any services matching the given name.
 #[cfg(target_os = "linux")]
-pub fn remove_service(name: String) {
+pub fn remove_service(name: String) -> Result<()> {
     if let Ok(status) = Command::new("systemctl").arg("stop").arg(name).status() {
         if status.success() {
             debug!("Successfully stopped service");
         }
     }
+
+    fs::remove_file("/usr/lib/systemd/system/sandpolis-agent.service")?;
+    return Ok(());
+}
+
+#[cfg(target_os = "linux")]
+pub fn install_service(exe_path: &Path) -> Result<()> {
+    fs::write(
+        "/usr/lib/systemd/system/sandpolis-agent.service",
+        r#"
+        [Unit]
+        Description=Sandpolis Agent
+        After=network.target
+
+        [Service]
+        ExecStart={}
+        Restart=always
+
+        [Install]
+        WantedBy=multi-user.target
+    "#,
+    )?;
+
+    return Ok(());
 }

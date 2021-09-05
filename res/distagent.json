@@ -4,7 +4,7 @@
 	"autorecover": false,
 	"kilo": {
 		"modules": [
-			{"group": "com.sandpolis", "artifact":"agent.kilo"}
+			{"group": "com.sandpolis", "artifact":"core.agent", "version":"0.1.0", "hash":"1311e4b129e881e698d1015f4087e5d104a6c684a4a94c1f6b179dbc24a3237c"}
 		]
 	}
 }
