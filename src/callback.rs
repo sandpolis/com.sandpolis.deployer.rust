@@ -18,7 +18,7 @@ use log::{debug, error, info};
 use serde_json;
 
 /// Perform a result callback
-pub fn callback(config: &CallbackConfig, result: &CallbackResult) -> Result<()> {
+pub fn send_callback(config: &CallbackConfig, result: &CallbackResult) -> Result<()> {
     let data = serde_json::to_string(result)?;
 
     // Fire off the callback

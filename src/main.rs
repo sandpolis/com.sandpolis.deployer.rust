@@ -54,6 +54,7 @@ pub struct CallbackConfig {
 pub struct CallbackResult {
     result: bool,
     install_path: String,
+    identifier: String,
 }
 
 #[derive(Deserialize)]

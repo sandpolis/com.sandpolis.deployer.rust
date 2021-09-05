@@ -10,6 +10,8 @@
 
 use crate::BinaryAssets;
 use crate::DistagentConfig;
+use crate::CallbackResult;
+use crate::callback::send_callback;
 
 use std::env;
 use std::fs;
@@ -104,6 +106,15 @@ pub fn install(config: &DistagentConfig) -> Result<()> {
             };
             copy(&mut http.get(url).send()?, &mut dest)?;
         }
+    }
+
+    // Send a "success" callback result if configured
+    if let Some(callback_config) = &config.callback {
+        send_callback(&callback_config, &CallbackResult {
+            result: true,
+            install_path: install_path.display().to_string(),
+            identifier: callback_config.identifier.clone(),
+        });
     }
 
     return Ok(());
