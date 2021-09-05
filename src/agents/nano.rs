@@ -8,13 +8,12 @@
 //                                                                            //
 //============================================================================//
 
+use crate::DistagentConfig;
 use anyhow::{bail, Result};
 use log::{debug, error, info};
-use std::collections::HashMap;
 
-/// Install or reinstall a nano (C++) agent.
-pub fn install(config: &HashMap<String, String>) -> Result<()> {
-
+/// Install or reinstall a nano (C++) agent
+pub fn install(config: &DistagentConfig) -> Result<()> {
     debug!("Starting nano agent installation");
     return Ok(());
 }

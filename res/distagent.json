@@ -1,0 +1,10 @@
+{
+	"agent_type": "kilo",
+	"install_path": "/tmp/s7s_agent",
+	"autorecover": false,
+	"kilo": {
+		"modules": [
+			{"group": "com.sandpolis", "artifact":"agent.kilo"}
+		]
+	}
+}

@@ -57,7 +57,7 @@ publishing {
 			artifactId = "distagent-windows-amd64"
 			version = project.version.toString()
 
-			artifact(project.file("target/x86_64-pc-windows-gnu/release/distagent"))
+			artifact(project.file("target/x86_64-pc-windows-gnu/release/distagent.exe"))
 		}
 		tasks.findByName("publishMavenWindowsAmd64PublicationToGitHubPackagesRepository")?.dependsOn(buildWindowsAmd64)
 	}
