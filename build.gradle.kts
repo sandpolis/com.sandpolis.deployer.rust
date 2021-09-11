@@ -9,26 +9,43 @@
 //============================================================================//
 
 plugins {
-	id("sandpolis-module")
-	id("sandpolis-soi")
+	id("sandpolis-instance")
 	id("sandpolis-publish")
+}
+
+// Build on the current platform
+tasks.findByName("assemble")?.doLast {
+	exec {
+		workingDir(project.getProjectDir())
+		commandLine(listOf("cargo", "build", "--color=never"))
+	}
+}
+
+tasks.findByName("clean")?.doLast {
+	delete("target")
+}
+
+// Run on the current platform
+val run by tasks.creating(Exec::class) {
+	workingDir(project.getProjectDir())
+	commandLine(listOf("cargo", "run", "--color=never"))
 }
 
 val buildLinuxAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
-	commandLine(listOf("cross", "build", "--release", "--target=x86_64-unknown-linux-gnu"))
+	commandLine(listOf("cross", "build", "--release", "--target=x86_64-unknown-linux-gnu", "--color=never"))
 }
 tasks.findByName("build")?.dependsOn(buildLinuxAmd64)
 
 val buildLinuxAarch64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
-	commandLine(listOf("cross", "build", "--release", "--target=aarch64-unknown-linux-gnu"))
+	commandLine(listOf("cross", "build", "--release", "--target=aarch64-unknown-linux-gnu", "--color=never"))
 }
 tasks.findByName("build")?.dependsOn(buildLinuxAarch64)
 
 val buildWindowsAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
-	commandLine(listOf("cross", "build", "--release", "--target=x86_64-pc-windows-gnu"))
+	commandLine(listOf("cross", "build", "--release", "--target=x86_64-pc-windows-gnu", "--color=never"))
 }
 tasks.findByName("build")?.dependsOn(buildWindowsAmd64)
 
@@ -61,8 +78,4 @@ publishing {
 		}
 		tasks.findByName("publishMavenWindowsAmd64PublicationToGitHubPackagesRepository")?.dependsOn(buildWindowsAmd64)
 	}
-}
-
-tasks.findByName("clean")?.doLast {
-	delete("target")
 }

@@ -8,11 +8,13 @@
 //                                                                            //
 //============================================================================//
 
-use anyhow::{bail, Result};
-use log::{debug, error, info};
 use std::fs;
 use std::path::Path;
 use std::process::Command;
+
+use anyhow::{bail, Result};
+use log::{debug, error, info};
+use which::which;
 
 /// Stop and delete any services matching the given name.
 #[cfg(target_os = "linux")]
@@ -46,4 +48,10 @@ pub fn install_service(exe_path: &Path) -> Result<()> {
     )?;
 
     return Ok(());
+}
+
+/// Check that systemd is actually installed
+#[cfg(target_os = "linux")]
+pub fn is_installed() -> bool {
+    return which("systemctl").is_ok();
 }

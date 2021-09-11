@@ -9,44 +9,69 @@
 //============================================================================//
 
 use crate::BinaryAssets;
-use crate::DistagentConfig;
-use crate::CallbackResult;
+use crate::config::DistagentConfig;
+use crate::callback::CallbackResult;
 use crate::callback::send_callback;
+use crate::systemd;
 
 use std::env;
 use std::fs;
 use std::io::copy;
 use std::io::Write;
 use std::path::Path;
+use std::collections::HashSet;
 
 use anyhow::{bail, Result};
 use log::{debug, error, info};
+use which::which;
+
+/// Check that the given directory appears to be an installation created by a
+/// distagent.
+pub fn is_distagent_installation(path: &Path) -> bool {
+    if ! path.is_dir() {
+        return false;
+    }
+
+    if ! path.join("lib").is_dir() {
+        return false;
+    }
+
+    if ! path.join("bin").is_dir() {
+        return false;
+    }
+
+    return true;
+}
 
 /// Find existing agent installations
-pub fn agent_search(config: &DistagentConfig) -> Vec<&Path> {
+pub fn agent_search(config: &DistagentConfig) -> HashSet<&Path> {
     debug!("Searching for existing kilo agent installations");
 
-    let mut paths = Vec::new();
+    let mut paths = HashSet::new();
 
     // First check the location specified in the config
     let config_path = Path::new(&config.install_path);
-    if config_path.exists() {
-        paths.push(config_path);
+    if is_distagent_installation(config_path) {
+        paths.insert(config_path);
+    }
+
+    // Next check standard location according to platform
+    let standard_path = match env::consts::OS {
+        "windows" => Path::new(""),
+        _ => Path::new("/opt/sandpolis-agent"),
+    };
+    if is_distagent_installation(standard_path) {
+        paths.insert(standard_path);
     }
 
     // Next check the PATH
-    match env::var("PATH") {
-        Ok(path) => {
-            for p in path
-                .split(":")
-                .map(|_p| Path::new(_p).join("sandpolis-agent"))
-            {
-                if p.exists() {
-                    fs::read_link(p);
-                }
+    match which("sandpolis-agent") {
+        Ok(discovered_path) => {
+            if is_distagent_installation(&discovered_path) {
+            //    paths.insert(discovered_path);
             }
         }
-        Err(e) => panic!(),
+        _ => (),
     }
 
     return paths;
@@ -59,9 +84,9 @@ pub fn install(config: &DistagentConfig) -> Result<()> {
     let install_path: &Path = if existing.len() == 1 {
         debug!(
             "Found an existing installation at: {}",
-            existing[0].display()
+            existing.iter().next().unwrap().display()
         );
-        existing[0]
+        existing.iter().next().unwrap()
     } else if existing.len() > 1 {
         info!("Multiple existing installations found");
         // TODO
@@ -108,13 +133,29 @@ pub fn install(config: &DistagentConfig) -> Result<()> {
         }
     }
 
+    // Install autostart components if requested
+    if config.autostart {
+        match env::consts::OS {
+            "windows" => {
+
+            }
+            "linux" => {
+                if systemd::is_installed() {
+
+                }
+            }
+            _ => {
+
+            }
+        };
+    }
+
     // Send a "success" callback result if configured
     if let Some(callback_config) = &config.callback {
         send_callback(&callback_config, &CallbackResult {
-            result: true,
             install_path: install_path.display().to_string(),
             identifier: callback_config.identifier.clone(),
-        });
+        })?;
     }
 
     return Ok(());

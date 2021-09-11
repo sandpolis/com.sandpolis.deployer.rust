@@ -8,7 +8,7 @@
 //                                                                            //
 //============================================================================//
 
-use crate::DistagentConfig;
+use crate::config::DistagentConfig;
 use anyhow::{bail, Result};
 use log::{debug, error, info};
 use std::fs::{create_dir_all, File};
