@@ -14,10 +14,14 @@ plugins {
 }
 
 // Build on the current platform
-tasks.findByName("assemble")?.doLast {
-	exec {
-		workingDir(project.getProjectDir())
-		commandLine(listOf("cargo", "build", "--color=never"))
+tasks.findByName("assemble")?.let { task ->
+	task.outputs.dir("target")
+	task.dependsOn("writeBuildConfig")
+	task.doLast {
+		exec {
+			workingDir(project.getProjectDir())
+			commandLine(listOf("cargo", "build", "--color=never"))
+		}
 	}
 }
 
@@ -27,55 +31,71 @@ tasks.findByName("clean")?.doLast {
 
 // Run on the current platform
 val run by tasks.creating(Exec::class) {
+	dependsOn("writeBuildConfig")
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cargo", "run", "--color=never"))
+	environment.put("RUST_LOG", "distagent=debug")
 }
 
 val buildLinuxAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
-	commandLine(listOf("cross", "build", "--release", "--target=x86_64-unknown-linux-gnu", "--color=never"))
+	commandLine(listOf("cross", "build", "--release", "--target=x86_64-unknown-linux-musl", "--color=never"))
+	outputs.file("target/x86_64-unknown-linux-musl/release/distagent")
 }
-tasks.findByName("build")?.dependsOn(buildLinuxAmd64)
 
 val buildLinuxAarch64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
-	commandLine(listOf("cross", "build", "--release", "--target=aarch64-unknown-linux-gnu", "--color=never"))
+	commandLine(listOf("cross", "build", "--release", "--target=aarch64-unknown-linux-musl", "--color=never"))
+	outputs.file("target/aarch64-unknown-linux-musl/release/distagent")
 }
-tasks.findByName("build")?.dependsOn(buildLinuxAarch64)
+
+val buildMacosAmd64 by tasks.creating(Exec::class) {
+	workingDir(project.getProjectDir())
+	commandLine(listOf("cross", "build", "--release", "--target=x86_64-apple-darwin", "--color=never"))
+	outputs.file("target/x86_64-apple-darwin/release/distagent")
+}
+
+val buildMacosAarch64 by tasks.creating(Exec::class) {
+	workingDir(project.getProjectDir())
+	commandLine(listOf("cross", "build", "--release", "--target=aarch64-apple-darwin", "--color=never"))
+	outputs.file("target/aarch64-apple-darwin/release/distagent")
+}
 
 val buildWindowsAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cross", "build", "--release", "--target=x86_64-pc-windows-gnu", "--color=never"))
+	outputs.file("target/x86_64-pc-windows-gnu/release/distagent.exe")
 }
-tasks.findByName("build")?.dependsOn(buildWindowsAmd64)
+
+tasks.findByName("build")?.dependsOn(buildLinuxAmd64, buildLinuxAarch64, buildMacosAmd64, buildMacosAarch64, buildWindowsAmd64)
 
 publishing {
 	publications {
-		create<MavenPublication>("mavenLinuxAmd64") {
+		create<MavenPublication>("distagent") {
 			groupId = "com.sandpolis"
-			artifactId = "distagent-linux-amd64"
+			artifactId = project.name.toString().replace("com.sandpolis.", "")
 			version = project.version.toString()
 
-			artifact(project.file("target/x86_64-unknown-linux-gnu/release/distagent"))
+			artifact(buildLinuxAmd64.outputs.files.getSingleFile()) {
+				classifier = "linux-amd64"
+			}
+
+			artifact(buildLinuxAarch64.outputs.files.getSingleFile()) {
+				classifier = "linux-aarch64"
+			}
+
+			artifact(buildMacosAmd64.outputs.files.getSingleFile()) {
+				classifier = "macos-amd64"
+			}
+
+			artifact(buildMacosAarch64.outputs.files.getSingleFile()) {
+				classifier = "macos-aarch64"
+			}
+
+			artifact(buildWindowsAmd64.outputs.files.getSingleFile()) {
+				classifier = "windows-amd64"
+			}
 		}
-		tasks.findByName("publishMavenLinuxAmd64PublicationToGitHubPackagesRepository")?.dependsOn(buildLinuxAmd64)
-
-		create<MavenPublication>("mavenLinuxAarch64") {
-			groupId = "com.sandpolis"
-			artifactId = "distagent-linux-aarch64"
-			version = project.version.toString()
-
-			artifact(project.file("target/aarch64-unknown-linux-gnu/release/distagent"))
-		}
-		tasks.findByName("publishMavenLinuxAarch64PublicationToGitHubPackagesRepository")?.dependsOn(buildLinuxAarch64)
-
-		create<MavenPublication>("mavenWindowsAmd64") {
-			groupId = "com.sandpolis"
-			artifactId = "distagent-windows-amd64"
-			version = project.version.toString()
-
-			artifact(project.file("target/x86_64-pc-windows-gnu/release/distagent.exe"))
-		}
-		tasks.findByName("publishMavenWindowsAmd64PublicationToGitHubPackagesRepository")?.dependsOn(buildWindowsAmd64)
+		tasks.findByName("publishMavenWindowsAmd64PublicationToGitHubPackagesRepository")?.dependsOn("build")
 	}
 }

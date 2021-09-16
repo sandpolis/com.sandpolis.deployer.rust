@@ -51,7 +51,7 @@ pub fn install_service(exe_path: &Path) -> Result<()> {
 }
 
 /// Check that systemd is actually installed
-#[cfg(target_os = "linux")]
+//#[cfg(target_os = "linux")]
 pub fn is_installed() -> bool {
     return which("systemctl").is_ok();
 }
