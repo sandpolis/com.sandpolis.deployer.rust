@@ -8,12 +8,12 @@
 //                                                                            //
 //============================================================================//
 
-use crate::config::DistagentConfig;
+use crate::config::DeployerConfig;
 use anyhow::{bail, Result};
 use log::{debug, error, info};
 
 /// Install or reinstall a nano (C++) agent
-pub fn install(config: &DistagentConfig) -> Result<()> {
+pub fn install(config: &DeployerConfig) -> Result<()> {
     debug!("Starting nano agent installation");
     return Ok(());
 }

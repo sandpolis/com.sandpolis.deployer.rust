@@ -49,7 +49,7 @@ pub struct CallbackConfig {
 }
 
 #[derive(Deserialize)]
-pub struct DistagentConfig {
+pub struct DeployerConfig {
     /// The type of agent to install
     pub agent_type: String,
 
@@ -68,7 +68,7 @@ pub struct DistagentConfig {
 }
 
 /// Validate the configuration
-pub fn validate_config(config: &DistagentConfig) -> Result<()> {
+pub fn validate_config(config: &DeployerConfig) -> Result<()> {
     // Check agent type
     if ! vec!["nano", "micro", "kilo"].contains(&config.agent_type.as_str()) {
         bail!("Invalid agent type");

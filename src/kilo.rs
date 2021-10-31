@@ -9,7 +9,7 @@
 //============================================================================//
 
 use crate::BinaryAssets;
-use crate::config::DistagentConfig;
+use crate::config::DeployerConfig;
 use crate::callback::CallbackResult;
 use crate::callback::send_callback;
 use crate::systemd;
@@ -26,8 +26,8 @@ use log::{debug, error, info};
 use which::which;
 
 /// Check that the given directory appears to be an installation created by a
-/// distagent.
-pub fn is_distagent_installation(path: &Path) -> bool {
+/// deployer.
+pub fn is_deployer_installation(path: &Path) -> bool {
     if ! path.is_dir() {
         return false;
     }
@@ -44,14 +44,14 @@ pub fn is_distagent_installation(path: &Path) -> bool {
 }
 
 /// Find existing agent installations
-pub fn agent_search(config: &DistagentConfig) -> HashSet<&Path> {
+pub fn agent_search(config: &DeployerConfig) -> HashSet<&Path> {
     debug!("Searching for existing kilo agent installations");
 
     let mut paths = HashSet::new();
 
     // First check the location specified in the config
     let config_path = Path::new(&config.install_path);
-    if is_distagent_installation(config_path) {
+    if is_deployer_installation(config_path) {
         paths.insert(config_path);
     }
 
@@ -60,14 +60,14 @@ pub fn agent_search(config: &DistagentConfig) -> HashSet<&Path> {
         "windows" => Path::new(""),
         _ => Path::new("/opt/sandpolis-agent"),
     };
-    if is_distagent_installation(standard_path) {
+    if is_deployer_installation(standard_path) {
         paths.insert(standard_path);
     }
 
     // Next check the PATH
     match which("sandpolis-agent") {
         Ok(discovered_path) => {
-            if is_distagent_installation(&discovered_path) {
+            if is_deployer_installation(&discovered_path) {
             //    paths.insert(discovered_path);
             }
         }
@@ -78,7 +78,7 @@ pub fn agent_search(config: &DistagentConfig) -> HashSet<&Path> {
 }
 
 /// Install or reinstall a kilo (Java) agent
-pub fn install(config: &DistagentConfig) -> Result<()> {
+pub fn install(config: &DeployerConfig) -> Result<()> {
     let existing = agent_search(config);
 
     let install_path: &Path = if existing.len() == 1 {

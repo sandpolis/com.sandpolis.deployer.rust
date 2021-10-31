@@ -8,7 +8,7 @@
 //                                                                            //
 //============================================================================//
 
-use crate::config::{validate_config, DistagentConfig};
+use crate::config::{validate_config, DeployerConfig};
 
 use anyhow::{bail, Result};
 use log::debug;
@@ -46,9 +46,9 @@ fn main() -> Result<()> {
         bail!("Missing build.json asset");
     }
 
-    if let Some(config_data) = BinaryAssets::get("distagent.json") {
-        debug!("Parsing {} byte distagent.json", config_data.len());
-        let config: DistagentConfig = serde_json::from_slice(&config_data)?;
+    if let Some(config_data) = BinaryAssets::get("deployer.json") {
+        debug!("Parsing {} byte deployer.json", config_data.len());
+        let config: DeployerConfig = serde_json::from_slice(&config_data)?;
 
         // Validate the configuration
         validate_config(&config)?;
@@ -61,7 +61,7 @@ fn main() -> Result<()> {
             _ => Ok(()),
         }?;
     } else {
-        bail!("Missing distagent.json asset");
+        bail!("Missing deployer.json asset");
     }
 
     Ok(())

@@ -1,16 +1,16 @@
 version: 2
 updates:
-- package-ecosystem: cargo
-  directory: "/"
-  schedule:
-    interval: daily
-    timezone: America/Chicago
-  open-pull-requests-limit: 99
-  ignore:
-  - dependency-name: hyper
-    versions:
-    - 0.14.5
-    - 0.14.6
-  - dependency-name: tokio
-    versions:
-    - 1.5.0
+  - package-ecosystem: cargo
+    directory: "/"
+    schedule:
+      interval: daily
+      timezone: America/Chicago
+    open-pull-requests-limit: 99
+    ignore:
+      - dependency-name: hyper
+        versions:
+          - 0.14.5
+          - 0.14.6
+      - dependency-name: tokio
+        versions:
+          - 1.5.0

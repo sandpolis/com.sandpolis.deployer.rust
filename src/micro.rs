@@ -8,14 +8,14 @@
 //                                                                            //
 //============================================================================//
 
-use crate::config::DistagentConfig;
+use crate::config::DeployerConfig;
 use anyhow::{bail, Result};
 use log::{debug, error, info};
 use std::fs::{create_dir_all, File};
 use std::io::Write;
 
 /// Install or reinstall a micro (Rust) agent
-pub fn install(config: &DistagentConfig) -> Result<()> {
+pub fn install(config: &DeployerConfig) -> Result<()> {
     debug!("Starting micro agent installation");
 
     // Create the agent directory

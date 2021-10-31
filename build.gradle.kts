@@ -34,44 +34,44 @@ val run by tasks.creating(Exec::class) {
 	dependsOn("writeBuildConfig")
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cargo", "run", "--color=never"))
-	environment.put("RUST_LOG", "distagent=debug")
+	environment.put("RUST_LOG", "deployer=debug")
 }
 
 val buildLinuxAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cross", "build", "--release", "--target=x86_64-unknown-linux-musl", "--color=never"))
-	outputs.file("target/x86_64-unknown-linux-musl/release/distagent")
+	outputs.file("target/x86_64-unknown-linux-musl/release/deployer")
 }
 
 val buildLinuxAarch64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cross", "build", "--release", "--target=aarch64-unknown-linux-musl", "--color=never"))
-	outputs.file("target/aarch64-unknown-linux-musl/release/distagent")
+	outputs.file("target/aarch64-unknown-linux-musl/release/deployer")
 }
 
 val buildMacosAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cross", "build", "--release", "--target=x86_64-apple-darwin", "--color=never"))
-	outputs.file("target/x86_64-apple-darwin/release/distagent")
+	outputs.file("target/x86_64-apple-darwin/release/deployer")
 }
 
 val buildMacosAarch64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cross", "build", "--release", "--target=aarch64-apple-darwin", "--color=never"))
-	outputs.file("target/aarch64-apple-darwin/release/distagent")
+	outputs.file("target/aarch64-apple-darwin/release/deployer")
 }
 
 val buildWindowsAmd64 by tasks.creating(Exec::class) {
 	workingDir(project.getProjectDir())
 	commandLine(listOf("cross", "build", "--release", "--target=x86_64-pc-windows-gnu", "--color=never"))
-	outputs.file("target/x86_64-pc-windows-gnu/release/distagent.exe")
+	outputs.file("target/x86_64-pc-windows-gnu/release/deployer.exe")
 }
 
 tasks.findByName("build")?.dependsOn(buildLinuxAmd64, buildLinuxAarch64, buildMacosAmd64, buildMacosAarch64, buildWindowsAmd64)
 
 publishing {
 	publications {
-		create<MavenPublication>("distagent") {
+		create<MavenPublication>("deployer") {
 			groupId = "com.sandpolis"
 			artifactId = project.name.toString().replace("com.sandpolis.", "")
 			version = project.version.toString()
@@ -96,6 +96,6 @@ publishing {
 				classifier = "windows-amd64"
 			}
 		}
-		tasks.findByName("publishMavenWindowsAmd64PublicationToGitHubPackagesRepository")?.dependsOn("build")
+		tasks.findByName("publishDeployerPublicationToCentralStagingRepository")?.dependsOn("build")
 	}
 }
