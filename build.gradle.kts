@@ -9,8 +9,9 @@
 //============================================================================//
 
 plugins {
-	id("sandpolis-instance")
-	id("sandpolis-publish")
+	id("com.sandpolis.build.module") version "+"
+	id("com.sandpolis.build.instance") version "+"
+	id("com.sandpolis.build.publish") version "+"
 }
 
 // Build on the current platform
@@ -76,23 +77,23 @@ publishing {
 			artifactId = project.name.toString().replace("com.sandpolis.", "")
 			version = project.version.toString()
 
-			artifact(buildLinuxAmd64.outputs.files.getSingleFile()) {
+			artifact("target/x86_64-unknown-linux-musl/release/deployer") {
 				classifier = "linux-amd64"
 			}
 
-			artifact(buildLinuxAarch64.outputs.files.getSingleFile()) {
+			artifact("target/aarch64-unknown-linux-musl/release/deployer") {
 				classifier = "linux-aarch64"
 			}
 
-			artifact(buildMacosAmd64.outputs.files.getSingleFile()) {
+			artifact("target/x86_64-apple-darwin/release/deployer") {
 				classifier = "macos-amd64"
 			}
 
-			artifact(buildMacosAarch64.outputs.files.getSingleFile()) {
+			artifact("target/aarch64-apple-darwin/release/deployer") {
 				classifier = "macos-aarch64"
 			}
 
-			artifact(buildWindowsAmd64.outputs.files.getSingleFile()) {
+			artifact("target/x86_64-pc-windows-gnu/release/deployer.exe") {
 				classifier = "windows-amd64"
 			}
 		}
