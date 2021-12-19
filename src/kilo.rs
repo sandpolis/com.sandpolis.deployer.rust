@@ -45,7 +45,7 @@ pub fn is_deployer_installation(path: &Path) -> bool {
 
 /// Find existing agent installations
 pub fn agent_search(config: &DeployerConfig) -> HashSet<&Path> {
-    debug!("Searching for existing kilo agent installations");
+    debug!("Searching for existing java agent installations");
 
     let mut paths = HashSet::new();
 
@@ -77,7 +77,7 @@ pub fn agent_search(config: &DeployerConfig) -> HashSet<&Path> {
     return paths;
 }
 
-/// Install or reinstall a kilo (Java) agent
+/// Install or reinstall a java (Java) agent
 pub fn install(config: &DeployerConfig) -> Result<()> {
     let existing = agent_search(config);
 
@@ -96,7 +96,7 @@ pub fn install(config: &DeployerConfig) -> Result<()> {
         Path::new(&config.install_path)
     };
 
-    debug!("Starting kilo agent installation");
+    debug!("Starting java agent installation");
 
     // Create base directory
     fs::create_dir_all(install_path)?;
@@ -105,7 +105,7 @@ pub fn install(config: &DeployerConfig) -> Result<()> {
     let http = reqwest::blocking::Client::new();
 
     // Install the required modules
-    for module in config.kilo.as_ref().expect("").modules.iter() {
+    for module in config.java.as_ref().expect("").modules.iter() {
         let mut dest = fs::File::create(install_path.join(format!("{}.jar", module.artifact)))?;
 
         if let Some(data) = BinaryAssets::get(&module.artifact) {

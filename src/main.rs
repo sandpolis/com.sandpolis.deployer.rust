@@ -15,9 +15,8 @@ use log::debug;
 use rust_embed::RustEmbed;
 use serde::Deserialize;
 
-pub mod kilo;
-pub mod micro;
-pub mod nano;
+pub mod java;
+pub mod rust;
 pub mod callback;
 pub mod config;
 pub mod systemd;
@@ -56,8 +55,8 @@ fn main() -> Result<()> {
         // Dispatch appropriate installer
         match config.agent_type.as_str() {
             "nano" => crate::nano::install(&config),
-            "micro" => crate::micro::install(&config),
-            "kilo" => crate::kilo::install(&config),
+            "rust" => crate::rust::install(&config),
+            "java" => crate::java::install(&config),
             _ => Ok(()),
         }?;
     } else {

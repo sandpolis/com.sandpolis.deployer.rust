@@ -14,15 +14,15 @@ use log::{debug, error, info};
 use std::fs::{create_dir_all, File};
 use std::io::Write;
 
-/// Install or reinstall a micro (Rust) agent
+/// Install or reinstall a rust agent
 pub fn install(config: &DeployerConfig) -> Result<()> {
-    debug!("Starting micro agent installation");
+    debug!("Starting rust agent installation");
 
     // Create the agent directory
     create_dir_all(config.install_path.as_str())?;
 
-    if let Some(executable) = crate::BinaryAssets::get("agent-micro") {
-        let exe_path = format!("{}/agent-micro", config.install_path);
+    if let Some(executable) = crate::BinaryAssets::get("agent-rust") {
+        let exe_path = format!("{}/agent-rust", config.install_path);
 
         File::create(exe_path)?.write_all(&executable)?;
     } else {

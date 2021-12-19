@@ -12,7 +12,7 @@ use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
-pub struct KiloAgentModule {
+pub struct JavaAgentModule {
     pub gpr_module: Option<String>,
 
     pub gpr_package: Option<String>,
@@ -34,9 +34,9 @@ pub struct KiloAgentModule {
 }
 
 #[derive(Deserialize)]
-pub struct KiloAgentConfig {
+pub struct JavaAgentConfig {
     /// A list of all required modules
-    pub modules: Vec<KiloAgentModule>,
+    pub modules: Vec<JavaAgentModule>,
 }
 
 #[derive(Deserialize)]
@@ -62,7 +62,7 @@ pub struct DeployerConfig {
 
     pub autostart: bool,
 
-    pub kilo: Option<KiloAgentConfig>,
+    pub java: Option<JavaAgentConfig>,
 
     pub callback: Option<CallbackConfig>,
 }
@@ -70,7 +70,7 @@ pub struct DeployerConfig {
 /// Validate the configuration
 pub fn validate_config(config: &DeployerConfig) -> Result<()> {
     // Check agent type
-    if ! vec!["nano", "micro", "kilo"].contains(&config.agent_type.as_str()) {
+    if ! vec!["rust", "java"].contains(&config.agent_type.as_str()) {
         bail!("Invalid agent type");
     }
 
